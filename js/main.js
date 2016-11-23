@@ -3,18 +3,17 @@ var center = {lat: 42.36, lng: -71.08};
 var map;
 var markers = [];
 
+function mapError() {
+    // stumped why my previous implement didn't work, but works on line 211
+    alert('Could not load map. Please try again.');
+};
+
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       center: center,
       zoom: 14
     });
 }
-
-function mapError() {
-	console.log("Error loading map");
-    var notification = document.querySelector('.mdl-js-snackbar');
-    notification.MaterialSnackbar.showSnackbar({message: 'Could not load map. Please try again.'});
-};
 
 function addMarker(place) {
     var contentString = '<div id="content">'+
@@ -104,12 +103,12 @@ function Location(data) {
 
 
     self.name = ko.observable(data.name);
-    self.address = ko.observable(data.location.address);
+    self.address = ko.observable(data.location.address ? data.location.address : 'No info');
     self.city = data.location.city;
     self.center = ko.observable(data.location.coordinate);
     self.rating_img = data.rating_img_url_large;
     self.num_ratings = data.review_count;
-    self.phone = ko.observable(data.display_phone);
+    self.phone = ko.observable(data.display_phone ? data.display_phone.slice(3) : 'No info');
     self.url = data.url;
     self.image = data.image_url;
 
@@ -124,7 +123,9 @@ function Location(data) {
     self.displayInfo = ko.computed(function() {
         if (self.showDetails()) {
             // animate marker and display info
-            animate(markerFilter(self.center(), markers));
+            marker = markerFilter(self.center(), markers);
+            map.panTo(marker.getPosition());
+            animate(marker);
             return self.name() + '<hr><ul><li>' + self.phone() + '</li><li>' + self.address() + '</li></ul>';
         } else {
             return self.name();
@@ -209,8 +210,7 @@ function ViewModel() {
         .fail(function(jqXHR, textStatus, errorThrown) {
             console.log('error[' + errorThrown + '], status[' + textStatus + '], jqXHR[' + JSON.stringify(jqXHR) + ']');
             var notification = document.querySelector('.mdl-js-snackbar');
-            notification.MaterialSnackbar.showSnackbar({message: 'Could not load results. Please try again.'}
-            );
+            notification.MaterialSnackbar.showSnackbar({message: 'Could not load results. Please try again.'});
         })
     }
 
@@ -242,7 +242,7 @@ function ViewModel() {
     			if (location.name().toLowerCase().startsWith(self.filterInput().toLowerCase())) {
     				showMarker(markerFilter(location.center(), markers));
     			}
-    			return location.name().toLowerCase().startsWith(self.filterInput().toLowerCase());
+    			return location.name().toLowerCase().includes(self.filterInput().toLowerCase());
     		});
     	} else {
     		showAllMarkers()

@@ -19,6 +19,7 @@
           <div class="mdl-cell mdl-cell--2-col-desktop mdl-cell--3-col-tablet mdl-cell--4-col-phone sidebar">
             <div class="wrap">
                 <h2 class="header">MapIt</h2>
+                <h3 class="error"></h3>
                 <form action="">
                   <div class="mdl-textfield mdl-js-textfield">
                     <input data-bind="value: query" class="mdl-textfield__input" type="text" id="search">
@@ -33,7 +34,7 @@
                 </button>
 
                   <div class="mdl-textfield mdl-js-textfield" data-bind="visible: locations().length > 0">
-                    <input data-bind="value: filterInput" class="mdl-textfield__input" type="text" id="filter">
+                    <input data-bind="textInput: filterInput, valuepdate: keyUpdate" class="mdl-textfield__input" type="text" id="filter">
                     <label class="mdl-textfield__label" for="filter">Filter your results....</label>
                   </div>
             </div>
@@ -54,7 +55,7 @@
                 </ul>
             </div>
             
-            <div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
+            <div id="error" aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
                 <div class="mdl-snackbar__text"></div>
                 <button type="button" class="mdl-snackbar__action"></button>
             </div>
@@ -71,8 +72,8 @@
         <script src="js/oauth.js"></script>
         <script src="js/sha1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDX_R6rLizTsk8xQOoRFOJrnpSegKg63k&callback=initMap" async defer onerror="mapError()"></script>
         <script src="js/main.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDX_R6rLizTsk8xQOoRFOJrnpSegKg63k&callback=initMap" async defer onerror="mapError()"></script>
 
     </body>
 </html>
